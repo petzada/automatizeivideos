@@ -1,0 +1,11 @@
+# downloaded once by the engine (large / re-downloadable)
+engine/models/
+engine/vendor/
+engine/sfx/
+__pycache__/
+# per-episode scratch (deleted at clean-up)
+part*/frames/
+part*/vo/
+part*/stills/
+part*/motion/
+part*/mix_raw.wav
