@@ -37,7 +37,7 @@ Critérios: **O** = "o que eu faria?", **R** = relógio correndo, **S** = segred
 | 54-58 s | **Falso alívio:** 03:00, silêncio, você respira. |
 | 58-66 s | **Virada:** a fechadura smart faz clique, e a porta abre sozinha (a regra 3 fica impossível). No corredor, a vizinha, sem bebê nenhum. |
 | 66-68 s | **Última fala (diálogo):** "Desculpa. Eles disseram que me deixavam em paz." |
-| 68-71.5 s | **Escolha:** VOCÊ DEIXA ELA ENTRAR? Verde: DEIXO ENTRAR / Vermelho: FECHO A PORTA. COMENTA AÍ, SEGUE PRO DIA 2. |
+| 68-71.5 s | **Escolha:** DIVIDE A COMIDA OU EXPULSA? Verde: DIVIDO: SOBRAM 7 DIAS / Vermelho: EXPULSO: ELA DEDURA. COMENTA AÍ, SEGUE PRO DIA 2. |
 
 ## Roteiro
 
@@ -52,9 +52,9 @@ Critérios: **O** = "o que eu faria?", **R** = relógio correndo, **S** = segred
 | 4 | narrador | Um carro moderno tem mais de 100 milhões de linhas de código. |
 | 5 | narrador | Hoje, nenhuma delas obedece o motorista. |
 | 6 | narrador | Mas você estocou: 30 dias de comida no armário. |
-| 7 | narrador | Regra número 1: não saia na rua. |
-| 8 | narrador | Regra dois: desligue tudo que tem wi-fi. |
-| 9 | narrador | Regra três: não abra a porta pra ninguém. |
+| 7 | narrador | Primeira regra: não saia na rua. |
+| 8 | narrador | Segunda regra: desligue tudo que tem wi-fi. |
+| 9 | narrador | Terceira regra: não abra a porta pra ninguém. |
 | 10 | narrador | 01:40. Alguém bate. |
 | 11 | vizinha | Sou eu, do 7A! Meu bebê não come desde ontem! |
 | 12 | narrador | Uma lata salva o bebê. Abrir quebra a regra três. |
@@ -80,6 +80,6 @@ Critérios: **O** = "o que eu faria?", **R** = relógio correndo, **S** = segred
 | 5 | Uma perda que fica | 17 | "Metade do freezer vai estragar." (de 30 dias, sobram uns 15) |
 | 6 | Falso alívio antes do fim | 18 | "03:00. Silêncio. Pela primeira vez, você respira." |
 | 7 | Última fala é imagem ou diálogo | 22 | "Desculpa. Eles disseram que me deixavam em paz." |
-| 8 | A escolha divide 50/50 e as duas custam | fim | DEIXO ENTRAR (divide a comida e talvez ajude os hackers) / FECHO A PORTA (a fechadura é deles, e ela fica lá fora) |
+| 8 | A escolha divide 50/50 e as duas custam | fim | DIVIDO (sobram 7 dias, e ela fica do seu lado) / EXPULSO (ela conta tudo pros hackers) |
 | 9 | Sem enchimento | todas | cada linha aumenta o risco, revela algo ou é uma escolha |
 | 10 | Teste dos 12 anos | todas | rua perigosa, comida, vizinha pedindo, geladeira dedurando, porta abrindo: tudo se entende sem explicação |

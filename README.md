@@ -1,8 +1,8 @@
 # automatizeivideos
 
-Estúdio de vídeos animados de sobrevivência (thriller em segunda pessoa com bonequinhos, 3D low-poly, vertical 1080x1920) feito com **um prompt no Claude Code**.
+Estúdio de vídeos animados de sobrevivência (thriller em segunda pessoa com bonequinhos, vertical 1080x1920) feito com **Claude + HyperFrames + FFmpeg**. Sem three.js: os cenários são desenhados em 2D por código num canvas, o [HyperFrames](https://github.com/heygen-com/hyperframes) renderiza o HTML em MP4 e o FFmpeg mixa e comprime.
 
-O método é o *story-video-studio* do @theoxmotion (licença MIT, ver `LICENSE-story-video-studio`), seguindo o guia em português da @morgsmariana. Cada frame é construído em código (three.js): não tem imagem nem vídeo de IA.
+O método é o *story-video-studio* do @theoxmotion (licença MIT, ver `LICENSE-story-video-studio`), seguindo o guia em português da @morgsmariana. Cada frame é desenhado em código: não tem imagem nem vídeo de IA.
 
 ## Como fazer um episódio
 
@@ -23,8 +23,7 @@ O motor original vem em inglês. Ele foi adaptado para pt-BR assim:
 | Arquivo | O que mudou |
 |---|---|
 | `engine/voice.py` | `"lang": "pt-br"` no `lines.json` usa as vozes pt-BR do Kokoro (`pm_alex` narrador, `pf_dora`, `pm_santa`); a transcrição usa o whisper `base` multilíngue em português; os acentos são normalizados no alinhamento; o fallback do edge-tts usa `pt-BR-AntonioNeural` / `pt-BR-FranciscaNeural`. |
-| `engine/stage.js` | palavras funcionais do português na quebra das legendas (e acentos preservados); unidades em português ficam junto do número ("30 dias"); textos da tela traduzíveis (`LABELS`: DIA, REGRA #, COMENTA AÍ, SEGUE PRO DIA). |
-| `engine/render.py` | a checagem de legenda conhece as palavras funcionais do português. |
+| `engine/flat.js` | palavras funcionais do português na quebra das legendas (e acentos preservados); unidades em português ficam junto do número ("30 dias"); textos da tela traduzíveis (`LABELS`: DIA, REGRA #, COMENTA AÍ, SEGUE PRO DIA); `badChunks()` acusa legenda ruim. |
 
 Escreva números duas vezes no `lines.json`: `text` é a legenda ("23:58") e `say` é a forma falada ("vinte e três e cinquenta e oito").
 
@@ -32,7 +31,19 @@ Escreva números duas vezes no `lines.json`: `text` é a legenda ("23:58") e `sa
 
 ```
 python -m pip install playwright kokoro-onnx soundfile faster-whisper edge-tts numpy pillow imageio-ffmpeg
-python engine/fetch_vendor.py
+npm install -g hyperframes@0.9.15        # precisa de Node 22+ e FFmpeg
+```
+
+## O fluxo de um episódio
+
+```
+python engine/voice.py part1                          # voz + tempo de cada palavra (timing.js)
+hyperframes check part1                               # valida a composição (part1/index.html)
+hyperframes snapshot part1 --at 0,12.5,33.5 --no-end  # olha os takes antes do render
+python engine/sound.py part1 68.63                    # mix: voz, trilha feita em código, efeitos, -14 LUFS
+hyperframes render part1 -o part1/video.mp4 --crf 14  # render (vídeo sem som, alguns minutos)
+python engine/encode.py part1                         # junta o som, comprime (<10 MB), folha de contato, ritmo
+python engine/still.py "part1/index.html#cover" part1/cover.jpg
 ```
 
 Na primeira execução, `voice.py` baixa a voz Kokoro (~350 MB) e o modelo de sincronia (~145 MB), e `sound.py` baixa os efeitos da Mixkit (licença gratuita, uso comercial sem crédito). Esses arquivos ficam fora do git (`.gitignore`).
@@ -43,4 +54,4 @@ Na primeira execução, `voice.py` baixa a voz Kokoro (~350 MB) e o modelo de si
 
 ## Episódios
 
-- `part1/`: **Hackeados, Dia 1: "A porta abriu sozinha"** (apartamento 7B, 68 s, pt-BR).
+- `part1/`: **Hackeados, Dia 1: "A porta abriu sozinha"** (apartamento 7B, 68 s, pt-BR): `part1/part1.mp4`, `part1/cover.jpg`, `part1/post.md`.

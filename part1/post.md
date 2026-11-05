@@ -10,12 +10,12 @@ Você tem 30 dias de comida e 3 regras:
 2. Desligue tudo que tem wi-fi
 3. Não abra a porta pra ninguém
 
-Só que a geladeira nunca foi desligada. Ela contou pra eles quanta comida você tem. E às 03:00 a fechadura smart abriu sozinha. A vizinha do 7A está ali, sem bebê nenhum.
+Só que a geladeira nunca foi desligada. Ela contou pra eles quanta comida você tem. E às 03:00 a fechadura smart abriu sozinha. A vizinha do 7A está ali, sem bebê nenhum. E ela sabe da sua comida.
 
 Fato real: um carro moderno pode ter mais de 100 milhões de linhas de código. (O detalhe da regra 2: geladeira, fechadura, câmera e TV também são "coisas com wi-fi". Quase ninguém lembra delas.)
 
-Você deixa ela entrar (A) ou fecha a porta (B)? Comenta A ou B. O Dia 2 depende de vocês.
+Você divide a comida com ela e sobram 7 dias (A), ou expulsa ela e ela te dedura pros hackers (B)? Comenta A ou B. O Dia 2 depende de vocês.
 
 **Hashtags:** #hackers #sobrevivencia #historiadeterror #animacao #oquevocefaria
 
-**Comentário fixado:** A porta já tá aberta e a fechadura é deles. A = divide a comida com ela. B = empurra e tenta trancar. Os votos decidem o Dia 2.
+**Comentário fixado:** A porta já tá aberta e a fechadura é deles. A = divide: sobram 7 dias pra cada um. B = expulsa: ela conta tudo pros hackers. Os votos decidem o Dia 2.

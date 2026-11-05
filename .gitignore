@@ -11,3 +11,9 @@ part*/motion/
 part*/mix_raw.wav
 part*/render_*.log
 part*/rate_*/
+part*/video.mp4
+part*/*_master.mp4
+part*/render.log
+part*/.hyperframes/
+part*/vo/
+part*/*.wav
