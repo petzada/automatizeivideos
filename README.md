@@ -55,3 +55,4 @@ Na primeira execução, `voice.py` baixa a voz Kokoro (~350 MB) e o modelo de si
 ## Episódios
 
 - `part1/`: **Hackeados, Dia 1: "A porta abriu sozinha"** (apartamento 7B, 68 s, pt-BR): `part1/part1.mp4`, `part1/cover.jpg`, `part1/post.md`.
+- `part2/`: **Hackeados, Dia 2: "O choro no elevador"** (resposta ao voto A, 65 s, pt-BR): `part2/part2.mp4`, `part2/cover.jpg`, `part2/post.md`.
