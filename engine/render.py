@@ -39,7 +39,7 @@ def main():
         except Exception: sys.exit("the page never set window.READY = true. Page errors: " + " | ".join(errors[:3]))
         total = page.evaluate("window.TOTAL")
         chunks = page.evaluate("(window.CHUNKS || []).map(c => (c.words || []).map(w => String(w.w || w)))")
-        FUNC = set("a an the to of at for from with by into onto under about after before until behind through and or but nor so if as than that this these those is are was were be been it its it's i i'm you you're they're he she we they me him her us them my your his our their who which what when where while because".split())
+        FUNC = set("a an the to of at for from with by into onto under about after before until behind through and or but nor so if as than that this these those is are was were be been it its it's i i'm you you're they're he she we they me him her us them my your his our their who which what when where while because o os um uma uns umas de do da dos das em no na nos nas ao aos à às por pelo pela pelos pelas para pra pro com sem e ou mas que se como é era foi ser seu sua seus suas meu minha meus minhas teu tua nosso nossa você vocês me te lhe desde até entre sobre isso isto esse essa este esta aquele aquela num numa não tá".split())
         PART = set("in on up off out down back away over".split())    # a verb's particle may end a chunk ("snowed in"), never alone
         bad = [" ".join(c) for c in chunks if c and (c[-1].lower().strip(".,!?;:\"'") in FUNC or (len(c) == 1 and c[0].lower() in PART))]
         if not chunks: print("CAPTION CHECK: the page has no window.CHUNKS, so the caption chunks can't be checked")

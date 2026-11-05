@@ -2,7 +2,7 @@
 
 The rater tells you plainly whether an episode is good or ass, scores it on 12 points, and gives the 3 fixes that would raise it most. It costs nothing beyond the Claude subscription.
 
-1. **Prepare the episode.** Run `python rate_prep.py my_episode.mp4`. Add `--prev part1.mp4` when you're rating a Part 2.
+1. **Prepare the episode.** Run `python rate_prep.py my_episode.mp4`. Add `--prev part1.mp4` when you're rating a Part 2, and `--lang pt` for an episode in Portuguese.
    - It writes a `rate_my_episode/` folder with:
      - the first frame;
      - the first 3 seconds;

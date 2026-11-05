@@ -216,6 +216,8 @@ export function recordPhysics(build, duration, dt = 1 / 120) {
 export function applyPhysics(meshes, state) { meshes.forEach((m, i) => { const s = state[i]; m.position.set(s[0], s[1], s[2]); m.quaternion.set(s[3], s[4], s[5], s[6]); }); }
 
 // ---------- the 2D overlay ----------
+// on-screen words; a film page can translate them: Object.assign(LABELS, {day: 'DIA', ...})
+export const LABELS = { day: 'DAY', rule: 'RULE #', comment: 'COMMENT BELOW', follow: 'FOLLOW FOR DAY ' };
 export const FONTS = ['700 70px Oswald', '700 40px "JetBrains Mono"', '700 120px Oswald'];
 export async function loadFonts() { for (const f of FONTS) await document.fonts.load(f); }
 function txt(c, s, x, y, font, fill, o = {}) {
@@ -226,7 +228,7 @@ function txt(c, s, x, y, font, fill, o = {}) {
 // the HUD, top-left, monospace: DAY n and a clock
 export function hud(c, day, clock, k = 1) {
   c.save(); c.globalAlpha = k; c.fillStyle = 'rgba(8,9,12,0.62)'; c.beginPath(); c.roundRect(40, 120, 330, 108, 18); c.fill();
-  txt(c, 'DAY ' + day, 70, 152, '700 34px "JetBrains Mono"', '#f3eee4', { align: 'left' });
+  txt(c, LABELS.day + ' ' + day, 70, 152, '700 34px "JetBrains Mono"', '#f3eee4', { align: 'left' });
   txt(c, clock, 70, 198, '700 40px "JetBrains Mono"', '#ff5a4f', { align: 'left' }); c.restore();
 }
 // captions: 1-3 words, chunky, the key word in an accent colour; words = [{w, key}] drawn centred at y
@@ -242,7 +244,7 @@ export function ruleSticker(c, n, title, k, y = 520) {
   if (k <= 0) return; c.save(); c.translate(540, y); c.rotate(-0.06); c.scale(0.6 + 0.4 * clamp(k, 0, 1.2), 0.6 + 0.4 * clamp(k, 0, 1.2));
   c.fillStyle = '#f4f0e6'; c.shadowColor = 'rgba(0,0,0,0.45)'; c.shadowBlur = 30; c.beginPath(); c.roundRect(-400, -120, 800, 250, 22); c.fill(); c.shadowBlur = 0;
   c.fillStyle = '#d93b30'; c.beginPath(); c.roundRect(-400, -120, 260, 70, [22, 0, 22, 0]); c.fill();
-  txt(c, 'RULE #' + n, -270, -84, '700 44px Oswald', '#ffffff');
+  txt(c, LABELS.rule + n, -270, -84, '700 44px Oswald', '#ffffff');
   const lines = Array.isArray(title) ? title : [title];
   lines.forEach((s, i) => txt(c, s.toUpperCase(), 0, 0 + i * 80 - (lines.length - 1) * 30 + 10, '700 72px Oswald', '#14161b'));
   c.restore();
@@ -255,7 +257,7 @@ export function endCard(c, t0, t, q, optA, optB, nextDay) {
   (Array.isArray(q) ? q : [q]).forEach((s, i) => txt(c, s.toUpperCase(), 540, 560 + i * 110, '700 104px Oswald', '#ffffff', { stroke: 10 }));
   const opt = (s, y, col) => { c.fillStyle = col; c.beginPath(); c.roundRect(170, y - 70, 740, 140, 30); c.fill(); txt(c, s.toUpperCase(), 540, y, '700 64px Oswald', '#ffffff'); };
   opt(optA, 900, '#2e9e57'); opt(optB, 1080, '#c8372d');
-  txt(c, 'COMMENT BELOW', 540, 1250, '700 56px Oswald', '#ffffff'); txt(c, 'FOLLOW FOR DAY ' + nextDay, 540, 1330, '700 46px Oswald', '#ffcc4d');
+  txt(c, LABELS.comment, 540, 1250, '700 56px Oswald', '#ffffff'); txt(c, LABELS.follow + nextDay, 540, 1330, '700 46px Oswald', '#ffcc4d');
   c.restore();
 }
 // a phone held in POV: a 2D screen with two stick thumbs; draw(c, x, y, w, h) fills the screen
@@ -272,11 +274,11 @@ export function phone(c, draw, k = 1) {
 // phrase starts, never ending on a function word ("of", "the", "your"...). A time ("2:14 AM") or a number with its unit
 // ("150 liters") stays together. Set window.CHUNKS to the result: render.py refuses a full render if a chunk ends badly.
 // keyColor: {red: '#ff4b3e', ...}; each line's `key` ({word: 'red'}) colours that word.
-export const FUNCTION_WORDS = new Set("a an the to of at for from with by into onto under about after before until behind through and or but nor so if as than that this these those is are was were be been it its it's i i'm you you're they're he she we they me him her us them my your his our their who which what when where while because".split(' '));
+export const FUNCTION_WORDS = new Set("a an the to of at for from with by into onto under about after before until behind through and or but nor so if as than that this these those is are was were be been it its it's i i'm you you're they're he she we they me him her us them my your his our their who which what when where while because o os um uma uns umas de do da dos das em no na nos nas ao aos à às por pelo pela pelos pelas para pra pro com sem e ou mas que se como é era foi ser seu sua seus suas meu minha meus minhas teu tua nosso nossa você vocês me te lhe desde até entre sobre isso isto esse essa este esta aquele aquela num numa não tá".split(' '));
 export const PARTICLES = new Set('in on up off out down back away over'.split(' '));
 export function chunkCaptions(T, keyColor = { red: '#ff5a4f', yellow: '#ffcc4d', amber: '#ffcc4d', green: '#4fe08a', blue: '#5ab4ff' }) {
-  const bare = s => String(s).toLowerCase().replace(/[^a-z0-9':]/g, '');
-  const DET = new Set("a an the my your his her their our its this that these those every each some no one two three".split(' '));
+  const bare = s => String(s).toLowerCase().replace(/[^\p{L}0-9':]/gu, '');
+  const DET = new Set("a an the my your his her their our its this that these those every each some no one two three o os as um uma meu minha seu sua".split(' '));
   const isF = u => u.f;                                           // marked below: function words, and "in/on/up..." that start a phrase
   const out = [];
   T.lines.forEach((L, li) => {
@@ -287,7 +289,7 @@ export function chunkCaptions(T, keyColor = { red: '#ff5a4f', yellow: '#ffcc4d',
       const brk = /[.,;!:?]$/.test(same ? raw[i] : x.w), d = String(x.w).replace(/[.,;!:?]+$/, ''), k = keys[bare(d)];
       const wd = { w: d, s: x.s, e: x.e, key: !!k, color: k ? (keyColor[k] || k) : undefined }, prev = units[units.length - 1];
       const glue = prev && prev.ws.length === 1 && ((/^(AM|PM)$/i.test(d) && /\d:\d\d$/.test(prev.ws[0].w)) ||
-        (/^(liters?|litres?|days?|minutes?|hours?|seconds?|floors?|meters?|metres?|km|miles?|percent|%)$/i.test(d) && /^\d+([.,]\d+)?$/.test(prev.ws[0].w)));
+        (/^(liters?|litres?|days?|minutes?|hours?|seconds?|floors?|meters?|metres?|km|miles?|percent|%|litros?|dias?|minutos?|horas?|segundos?|andares|andar|metros?|quilos?|latas?|anos?)$/i.test(d) && /^\d+([.,]\d+)?$/.test(prev.ws[0].w)));
       if (glue) { prev.ws.push(wd); prev.brk = brk; } else units.push({ ws: [wd], brk });
     });
     units.forEach((u, i) => { const b = bare(u.ws[0].w), nx = units[i + 1];

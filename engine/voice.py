@@ -19,6 +19,8 @@ part = sys.argv[1]
 spec = json.load(open(os.path.join(part, "lines.json"), encoding="utf-8"))
 VOICE, SPEED = spec.get("voice", "am_michael"), float(spec.get("speed", 1.1))
 engine = os.environ.get("VOICE_ENGINE", spec.get("engine", "kokoro"))
+LANG = spec.get("lang", "en-us")                 # "pt-br" for Brazilian Portuguese (Kokoro voices pm_alex, pm_santa, pf_dora)
+WLANG = LANG.split("-")[0]                        # the language whisper listens for
 os.makedirs(os.path.join(part, "vo"), exist_ok=True); os.makedirs(MODELS, exist_ok=True)
 
 def decode(path):
@@ -40,12 +42,14 @@ def whisper():
     global _w
     if _w is None:
         from faster_whisper import WhisperModel, download_model
-        d = os.path.join(MODELS, "whisper-base.en")
-        if not os.path.exists(os.path.join(d, "model.bin")): print("downloading the timing model (once)"); download_model("base.en", output_dir=d)
+        name = "base.en" if WLANG == "en" else "base"         # base.en only understands English
+        d = os.path.join(MODELS, "whisper-" + name)
+        if not os.path.exists(os.path.join(d, "model.bin")): print("downloading the timing model (once)"); download_model(name, output_dir=d)
         _w = WhisperModel(d, device="cpu", compute_type="int8")
     return _w
 
-def norm(w): return re.sub(r"[^a-z0-9]", "", w.lower())
+import unicodedata
+def norm(w): return re.sub(r"[^a-z0-9]", "", unicodedata.normalize("NFD", w.lower()).encode("ascii", "ignore").decode())
 def clean(w): return w.strip(".,!?;\"()[]").rstrip(".")
 
 def estimate(text, raw):
@@ -61,7 +65,7 @@ def align(text, raw):
     """word times from faster-whisper, matched back to the script's own words"""
     try:
         audio = np.frombuffer(raw, np.int16).astype(np.float32)[::3] / 32768      # 48 kHz -> 16 kHz
-        segs, _ = whisper().transcribe(audio, language="en", word_timestamps=True, beam_size=1, initial_prompt=text)
+        segs, _ = whisper().transcribe(audio, language=WLANG, word_timestamps=True, beam_size=1, initial_prompt=text)
         heard = [(w.word, w.start, w.end) for s in segs for w in s.words]
     except Exception as e:
         print("word timing fell back to an estimate:", e); return estimate(text, raw)
@@ -88,6 +92,7 @@ def align(text, raw):
 async def edge(text, voice, path):
     import edge_tts
     if re.match(r"^[ab][fm]_", voice): voice = "en-US-AvaNeural" if voice[1] == "f" else "en-US-AndrewNeural"
+    if re.match(r"^p[fm]_", voice): voice = "pt-BR-FranciscaNeural" if voice[1] == "f" else "pt-BR-AntonioNeural"
     for attempt in range(3):
         try:
             words, audio = [], bytearray()
@@ -114,7 +119,7 @@ async def speak(i, line):
     text, path = line.get("say", line["text"]).strip(), os.path.join(part, "vo", f"line{i:02d}")
     if engine == "kokoro":
         import soundfile as sf
-        a, sr = kokoro().create(text, voice=line.get("voice", VOICE), speed=float(line.get("speed", SPEED)), lang="en-us")
+        a, sr = kokoro().create(text, voice=line.get("voice", VOICE), speed=float(line.get("speed", SPEED)), lang=LANG)
         sf.write(path + ".wav", a, sr); raw = decode(path + ".wav"); return raw, align(text, raw)
     if engine == "edge":
         bounds = await edge(text, line.get("voice", VOICE), path + ".mp3"); return decode(path + ".mp3"), bounds

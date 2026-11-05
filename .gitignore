@@ -9,3 +9,5 @@ part*/vo/
 part*/stills/
 part*/motion/
 part*/mix_raw.wav
+part*/render_*.log
+part*/rate_*/

@@ -3,6 +3,7 @@
     python rate_prep.py episode.mp4                      -> rate_episode/ next to the video
     python rate_prep.py part02.mp4 --prev part01.mp4      also checks the cast against the previous part
     python rate_prep.py episode.mp4 --out my_folder
+    python rate_prep.py episode.mp4 --lang pt           transcript in another language (default en)
 
 It writes, into the output folder:
     first_frame.jpg   frame 0 at full size (what the feed shows before anyone taps)
@@ -94,15 +95,15 @@ def audio(path):
     return a
 
 
-def transcript(path):
+def transcript(path, lang="en"):
     try:
         from faster_whisper import WhisperModel
     except ImportError:
         return {"transcript": "not available (pip install faster-whisper to add it)"}
     raw = subprocess.run([FF, "-loglevel", "error", "-i", path, "-ac", "1", "-ar", "16000", "-f", "s16le", "-"], capture_output=True).stdout
     x = np.frombuffer(raw, np.int16).astype(np.float32) / 32768
-    m = WhisperModel("base.en", device="cpu", compute_type="int8")
-    segs, _ = m.transcribe(x, language="en", word_timestamps=True, beam_size=1)
+    m = WhisperModel("base.en" if lang == "en" else "base", device="cpu", compute_type="int8")   # base.en only understands English
+    segs, _ = m.transcribe(x, language=lang, word_timestamps=True, beam_size=1)
     segs = list(segs)
     words = [w for s in segs for w in s.words]
     if not words:
@@ -149,7 +150,7 @@ def main():
     m.update(motion(src))
     if m["has_audio"]:
         m.update(audio(src))
-        m.update(transcript(src))
+        m.update(transcript(src, a[a.index("--lang") + 1] if "--lang" in a else "en"))
     else:
         m["speech_note"] = "the file has no audio track"
     json.dump(m, open(os.path.join(out, "metrics.json"), "w", encoding="utf-8"), indent=1)
